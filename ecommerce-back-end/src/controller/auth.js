@@ -1,6 +1,8 @@
 const User = require('../models/user');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+const shortid = require("shortid");
 const { validationResult } = require('express-validator');
+
 exports.signup = (req, res) => {
 
     User.findOne({ email: req.body.email }).exec((error, user) => {
@@ -13,7 +15,8 @@ exports.signup = (req, res) => {
         firstName,
         lastName,
         email,
-        password
+        password,
+
     } = req.body;
 
     const _user = new User({
@@ -21,7 +24,7 @@ exports.signup = (req, res) => {
         lastName,
         email,
         password,
-        username: Math.random().toString()
+        username: shortid.generate(),
     });
 
     _user.save((error, data) => {
@@ -31,11 +34,56 @@ exports.signup = (req, res) => {
             })
         }
         if (data) {
+            const token = generateJwtToken(data._id, data.role);
+            res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge + 1000 });
             return res.status(201).json({
-                message: "User created Successfully..!"
+                message: token
             })
         }
     })
 }
-exports.signin = (req, res) => {
+const maxAge = 7 * 24 * 60 * 60;
+const createToken = (id) => {
+    return jwt.sign({ id }, 'net coderthanhson secret', {
+        expiresIn: maxAge
+    })
 }
+const generateJwtToken = (_id, role) => {
+    return jwt.sign({ _id, role }, process.env.JWT_SECRET, {
+        expiresIn: maxAge,
+    });
+};
+exports.signin = (req, res) => {
+    User.findOne({ email: req.body.email }).exec(async (error, user) => {
+        if (error) return res.status(400).json({ error });
+        if (user) {
+            const isPassword = await user.authenticate(req.body.password);
+            if (isPassword && user.role === "user") {
+
+                const token = generateJwtToken(user._id, user.role);
+                // createToken(user._id);
+                const { _id, firstName, lastName, email, role, fullName } = user;
+                res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge + 1000 });
+                res.status(200).json({
+                    token,
+                    user: { _id, firstName, lastName, email, role, fullName },
+                });
+            } else {
+                return res.status(400).json({
+                    message: "Something went wrong",
+                });
+            }
+            // try {
+            //     const token = createToken(user._id);
+            //     res.status(201).json({ user: user._id, token: token });
+
+            // } catch (err) {
+            //     const errors = handleErrors(err);
+            //     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
+            //     res.status(400).json({ errors });
+            // }
+        } else {
+            return res.status(400).json({ message: "Something went wrong" });
+        }
+    });
+};

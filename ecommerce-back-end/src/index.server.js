@@ -3,9 +3,11 @@ const app = express();
 const env = require('dotenv');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const cookiePraser = require('cookie-parser');
 
 //routes
 const userRoute = require('./routes/auth');
+const adminRoute = require('./routes/admin/auth')
 
 //environment variable or you can say constants
 env.config();
@@ -20,14 +22,16 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO
 });
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookiePraser());
+
 app.use('/api', userRoute);
+app.use('/api', adminRoute);
 
 app.get('/', (req, res, next) => {
     res.status(200).json({
         message: `Hello from Server${process.env.MONGO_DB_PASSWORD}`
     });
 });
-
 app.post('/data', (req, res, next) => {
     res.status(200).json({
         message: req.body

@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const env = require('dotenv');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookiePraser = require('cookie-parser');
 
 //routes
 const userRoute = require('./routes/auth');
-const adminRoute = require('./routes/admin/auth')
+const adminRoute = require('./routes/admin/auth');
+const categoryRoute = require('./routes/category');
 
 //environment variable or you can say constants
 env.config();
@@ -20,12 +21,14 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO
 }).then(() => {
     console.log('Database connected');
 });
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cookiePraser());
-
+//Router variable
 app.use('/api', userRoute);
 app.use('/api', adminRoute);
+
+
 
 app.get('/', (req, res, next) => {
     res.status(200).json({

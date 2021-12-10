@@ -34,8 +34,8 @@ exports.signup = (req, res) => {
             })
         }
         if (data) {
-            const token = generateJwtToken(data._id, data.role);
-            res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge + 1000 });
+            // const token = generateJwtToken(data._id, data.role);
+            // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge + 1000 });
             return res.status(201).json({
                 message: token
             })

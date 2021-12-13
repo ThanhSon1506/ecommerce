@@ -9,6 +9,7 @@ const cookiePraser = require('cookie-parser');
 const userRoute = require('./routes/auth');
 const adminRoute = require('./routes/admin/auth');
 const categoryRoute = require('./routes/category');
+const productRoute = require('./routes/product');
 
 //environment variable or you can say constants
 env.config();
@@ -27,7 +28,8 @@ app.use(cookiePraser());
 //Router variable
 app.use('/api', userRoute);
 app.use('/api', adminRoute);
-
+app.use('/api', categoryRoute);
+app.use('/api', productRoute);
 
 
 app.get('/', (req, res, next) => {

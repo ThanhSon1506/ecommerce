@@ -30,17 +30,15 @@ exports.signup = (req, res) => {
     _user.save((error, data) => {
         if (error) {
             return res.status(400).json({
-                message: "Something went wrong"
-            })
+                message: "Something went wrong",
+            });
         }
         if (data) {
-            // const token = generateJwtToken(data._id, data.role);
-            // res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge + 1000 });
             return res.status(201).json({
-                message: token
-            })
+                message: "User created Successfully..!",
+            });
         }
-    })
+    });
 }
 const maxAge = 7 * 24 * 60 * 60;
 const createToken = (id) => {
@@ -73,15 +71,7 @@ exports.signin = (req, res) => {
                     message: "Something went wrong",
                 });
             }
-            // try {
-            //     const token = createToken(user._id);
-            //     res.status(201).json({ user: user._id, token: token });
 
-            // } catch (err) {
-            //     const errors = handleErrors(err);
-            //     res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000 });
-            //     res.status(400).json({ errors });
-            // }
         } else {
             return res.status(400).json({ message: "Something went wrong" });
         }

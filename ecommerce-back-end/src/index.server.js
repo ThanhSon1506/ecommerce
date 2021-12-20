@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const env = require('dotenv');
+const path = require('path');
 // const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookiePraser = require('cookie-parser');
@@ -10,6 +11,7 @@ const userRoute = require('./routes/auth');
 const adminRoute = require('./routes/admin/auth');
 const categoryRoute = require('./routes/category');
 const productRoute = require('./routes/product');
+const cartRoute = require('./routes/cart');
 
 //environment variable or you can say constants
 env.config();
@@ -24,12 +26,14 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO
 });
 // app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
+app.use('/public', express.static(path.join(__dirname, 'uploads')));
 app.use(cookiePraser());
 //Router variable
 app.use('/api', userRoute);
 app.use('/api', adminRoute);
 app.use('/api', categoryRoute);
 app.use('/api', productRoute);
+app.use('/api', cartRoute)
 
 
 app.get('/', (req, res, next) => {

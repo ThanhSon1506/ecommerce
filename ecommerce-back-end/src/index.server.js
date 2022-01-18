@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const env = require('dotenv');
 const path = require('path');
+const cors = require('cors');
 // const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const cookiePraser = require('cookie-parser');
@@ -25,6 +26,7 @@ mongoose.connect(`mongodb+srv://${process.env.MONGO_DB_USER}:${process.env.MONGO
     console.log('Database connected');
 });
 // app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors());
 app.use(express.json());
 app.use('/public', express.static(path.join(__dirname, 'uploads')));
 app.use(cookiePraser());

@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 
 function Input(props) {
     return (
-        <Form.Group controlId="formBasicEmail" style={{ marginBottom: '10px' }}>
+        <Form.Group style={{ marginBottom: '10px' }}>
             <Form.Label>{props.label}</Form.Label>
             <Form.Control
                 type={props.type}
